@@ -137,6 +137,15 @@ class rabbitmq(
     Class['::rabbitmq::service'] -> Class['::rabbitmq::install::rabbitmqadmin']
   }
 
+  if ($config_stomp) {
+    rabbitmq_plugin { 'rabbitmq_stomp':
+      ensure  => present,
+      require => Class['rabbitmq::install'],
+      notify  => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins'
+    }
+  }
+
   if ($ldap_auth) {
     rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
       ensure   => present,
