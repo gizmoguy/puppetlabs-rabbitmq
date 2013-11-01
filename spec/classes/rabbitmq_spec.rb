@@ -218,6 +218,9 @@ describe 'rabbitmq' do
               'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\]/,
             })
           end
+          it 'should install rabbitmq_stomp plugin' do
+            should contain_rabbitmq_plugin('rabbitmq_stomp')
+          end
         end
         describe 'stomp when set with ssl' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
