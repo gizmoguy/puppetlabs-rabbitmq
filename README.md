@@ -222,6 +222,32 @@ List of RabbitMQ plugins to install/enable.
 
 The RabbitMQ port.
 
+####`ssl`
+
+Enable RabbitMQ SSL listener.
+
+####`ssl_cacert`
+
+The CA certificate to use for RabbitMQ SSL.
+
+####`ssl_cert`
+
+The public certificate to use for RabbitMQ SSL.
+
+####`ssl_key`
+
+The private key to use for RabbitMQ SSL.
+
+####`ssl_port`
+
+The port the RabbitMQ SSL listener should use.
+
+####`ssl_management`
+
+If enabled, should the management interface listen on HTTPS instead of HTTP.
+
+Note: You must configure ssl_cacert, ssl_cert and ssl_key first.
+
 ####`management_port`
 
 The port for the RabbitMQ management interface.

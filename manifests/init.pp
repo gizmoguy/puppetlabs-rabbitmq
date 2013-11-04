@@ -35,7 +35,8 @@ class rabbitmq(
   $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
   $ssl_cert                   = $rabbitmq::params::ssl_cert,
   $ssl_key                    = $rabbitmq::params::ssl_key,
-  $ssl_management_port        = $rabbitmq::params::ssl_management_port,
+  $ssl_management             = $rabbitmq::params::ssl_management,
+  $ssl_port                   = $rabbitmq::params::ssl_port,
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
@@ -94,8 +95,9 @@ class rabbitmq(
   validate_string($ssl_cacert)
   validate_string($ssl_cert)
   validate_string($ssl_key)
-  validate_string($ssl_management_port)
-  validate_re($ssl_management_port, '\d+')
+  validate_bool($ssl_management)
+  validate_string($ssl_port)
+  validate_re($ssl_port, '\d+')
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
   validate_bool($ldap_auth)
