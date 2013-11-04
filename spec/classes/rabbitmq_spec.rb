@@ -232,6 +232,20 @@ describe 'rabbitmq' do
         end
       end
 
+     describe 'install additional plugins' do
+        let(:params) {{ :plugin_list => ['rabbitmq_shovel', 'rabbitmq_mqtt'] }}
+        it 'should install rabbitmq_shovel plugin' do
+          should contain_rabbitmq_plugin('rabbitmq_shovel').with({
+            'ensure' => 'present'
+          })
+        end
+        it 'should install rabbitmq_mqtt plugin' do
+          should contain_rabbitmq_plugin('rabbitmq_mqtt').with({
+            'ensure' => 'present'
+          })
+        end
+      end
+
       describe 'configuring ldap authentication' do
         let :params do
           { :config_stomp         => true,

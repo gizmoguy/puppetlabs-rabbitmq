@@ -214,6 +214,10 @@ Where should the package be installed from?
 
 Location of RabbitMQ plugins.
 
+####`plugin_list`
+
+List of RabbitMQ plugins to install/enable.
+
 ####`port`
 
 The RabbitMQ port.

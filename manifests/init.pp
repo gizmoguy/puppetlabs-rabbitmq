@@ -26,6 +26,7 @@ class rabbitmq(
   $package_provider           = $rabbitmq::params::package_provider,
   $package_source             = $rabbitmq::params::package_source,
   $plugin_dir                 = $rabbitmq::params::plugin_dir,
+  $plugin_list                = $rabbitmq::params::plugin_list,
   $port                       = $rabbitmq::params::port,
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
@@ -80,6 +81,7 @@ class rabbitmq(
   validate_re($management_port, '\d+')
   validate_string($node_ip_address)
   validate_absolute_path($plugin_dir)
+  validate_array($plugin_list)
   validate_re($port, '\d+')
   validate_re($stomp_port, '\d+')
   validate_bool($wipe_db_on_cookie_change)
@@ -148,6 +150,15 @@ class rabbitmq(
 
   if ($ldap_auth) {
     rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
+    }
+  }
+
+  if (size($plugin_list) > 0) {
+    rabbitmq_plugin { $plugin_list:
       ensure   => present,
       require  => Class['rabbitmq::install'],
       notify   => Class['rabbitmq::service'],
