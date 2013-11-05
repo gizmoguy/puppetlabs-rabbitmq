@@ -199,24 +199,23 @@ describe 'rabbitmq' do
         describe 'node_ip_address when set' do
           let(:params) {{ :node_ip_address => '172.0.0.1' }}
           it 'should set RABBITMQ_NODE_IP_ADDRESS to specified value' do
-            contain_file('rabbitmq-env.config').with({
-              'content' => 'RABBITMQ_NODE_IP_ADDRESS=172.0.0.1',
-            })
+            should contain_file('rabbitmq-env.config') \
+              .with_content(/RABBITMQ_NODE_IP_ADDRESS=172\.0\.0\.1/)
           end
         end
 
         describe 'stomp by default' do
           it 'should not specify stomp parameters in rabbitmq.config' do
-            contain_file('rabbitmq.config').without({
-              'content' => /stomp/,})
+            should_not contain_file('rabbitmq.config') \
+              .with_content(/stomp/)
           end
         end
         describe 'stomp when set' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679 }}
           it 'should specify stomp port in rabbitmq.config' do
-            contain_file('rabbitmq.config').with({
-              'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\]/,
-            })
+            should contain_file('rabbitmq.config') \
+              .with_content(/rabbitmq_stomp/)
+              .with_content(/tcp_listeners, \[5679\]/)
           end
           it 'should install rabbitmq_stomp plugin' do
             should contain_rabbitmq_plugin('rabbitmq_stomp')
@@ -225,9 +224,10 @@ describe 'rabbitmq' do
         describe 'stomp when set with ssl' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
           it 'should specify stomp port and ssl stomp port in rabbitmq.config' do
-            contain_file('rabbitmq.config').with({
-              'content' => /rabbitmq_stomp.*tcp_listeners, \[5679\].*ssl_listeners, \[5680\]/,
-            })
+            should contain_file('rabbitmq.config') \
+              .with_content(/rabbitmq_stomp/)
+              .with_content(/tcp_listeners, \[5679\]/)
+              .with_content(/ssl_listeners, \[5680\]/)
           end
         end
       end
@@ -273,28 +273,41 @@ describe 'rabbitmq' do
       describe 'default_user and default_pass set' do
         let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
         it 'should set default_user and default_pass to specified values' do
-          contain_file('rabbitmq.config').with({
-            'content' => /default_user, <<"foo">>.*default_pass, <<"bar">>/,
-          })
+          should contain_file('rabbitmq.config') \
+            .with_content(/default_user, <<"foo">>/)
+            .with_content(/default_pass, <<"bar">>/)
         end
       end
 
       describe 'ssl options' do
         let(:params) {
           { :ssl => true,
-            :ssl_management_port => 3141,
+            :ssl_port => 3141,
             :ssl_cacert => '/path/to/cacert',
             :ssl_cert => '/path/to/cert',
             :ssl_key => '/path/to/key'
         } }
 
         it 'should set ssl options to specified values' do
-          contain_file('rabbitmq.config').with({
-            'content' => /ssl_listeners, \[3141\].*
-            ssl_options, \[{cacertfile,"\/path\/to\/cacert".*
-            certfile="\/path\/to\/cert".*
-            keyfile,"\/path\/to\/key/,
-          })
+          should contain_file('rabbitmq.config') \
+            .with_content(/ssl_listeners, \[3141\]/)
+            .with_content(/ssl_options, \[{cacertfile,"\/path\/to\/cacert"/)
+            .with_content(/certfile,"\/path\/to\/cert"/)
+            .with_content(/keyfile,"\/path\/to\/key"/)
+        end
+      end
+
+      describe 'ssl management options' do
+        let(:params) {
+          { :ssl_management => true,
+            :management_port => 1337
+        } }
+
+        it 'should set ssl options to specified values' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/listener, \[/)
+            .with_content(/{port, 1337},/)
+            .with_content(/{ssl, true}/)
         end
       end
 
