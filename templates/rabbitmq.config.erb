@@ -9,8 +9,25 @@
     {cluster_nodes, {[<%= @_cluster_nodes.map { |n| "\'rabbit@#{n}\'" }.join(', ') %>], <%= @cluster_node_type %>}},
     {cluster_partition_handling, <%= @cluster_partition_handling %>},
 <% end -%>
+<% if !@ip.empty? -%>
+    {tcp_listeners, [
+    <%- @ip.sort.each_with_index do |addr, i| -%>
+        {"<%= addr %>", <%= @port %>}<%= ',' if i < (@ip.size - 1) %>
+    <%- end -%>
+    ]},
+<%- else -%>
+    {tcp_listeners, [<%= @port %>]},
+<%- end -%>
 <%- if @ssl %>
+<%- if !@ssl_ip.empty? -%>
+    {ssl_listeners, [
+    <%- @ssl_ip.sort.each_with_index do |addr, i| -%>
+        {"<%= addr %>", <%= @ssl_port %>}<%= ',' if i < (@ssl_ip.size - 1) %>
+    <%- end -%>
+    ]},
+<%- else -%>
     {ssl_listeners, [<%= @ssl_port %>]},
+<%- end -%>
     {ssl_options, [{cacertfile,"<%= @ssl_cacert %>"},
                     {certfile,"<%= @ssl_cert %>"},
                     {keyfile,"<%= @ssl_key %>"},
@@ -28,24 +45,40 @@
 <% if @admin_enable -%>,
 % Configure the management interface/plugin
   {rabbitmq_management, [
-    <%- if @ssl_management -%>
-    {listener, [
-      {port, <%= @management_port %>},
-      {ssl, true}
-    ]}
-    <%- else -%>
+    {redirect_old_port, false},
     {listener, [
       {port, <%= @management_port %>}
-    ]}
+    <%- if !@management_ip.empty? %>,
+        {ip, "<%= @management_ip %>"}
     <%- end -%>
+    <%- if @ssl_management -%>,
+      {ssl, true}
+    <%- end -%>
+    ]}
   ]}
 <% end -%>
 <% if @config_stomp -%>,
 % Configure the Stomp Plugin listening port
   {rabbitmq_stomp, [
+  <%- if !@stomp_ip.empty? -%>
+    {tcp_listeners, [
+    <%- @stomp_ip.sort.each_with_index do |addr, i| -%>
+        {"<%= addr %>", <%= @stomp_port %>}<%= ',' if i < (@stomp_ip.size - 1) %>
+    <%- end -%>
+    ]}
+  <%- else -%>
     {tcp_listeners, [<%= @stomp_port %>]}
+  <%- end -%>
   <%- if @ssl_stomp_port -%>,
+    <%- if !@ssl_stomp_ip.empty? -%>,
+    {ssl_listeners, [
+    <%- @ssl_stomp_ip.sort.each_with_index do |addr, i| -%>
+        {"<%= addr %>", <%= @ssl_stomp_port %>}<%= ',' if i < (@ssl_stomp_ip.size - 1) %>
+    <%- end -%>
+    ]}
+    <%- else -%>
     {ssl_listeners, [<%= @ssl_stomp_port %>]}
+    <%- end -%>
   <%- end -%>
   ]}
 <%- if @ldap_auth -%>,

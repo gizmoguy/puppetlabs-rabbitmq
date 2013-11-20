@@ -16,9 +16,10 @@ class rabbitmq(
   $env_config_path            = $rabbitmq::params::env_config_path,
   $erlang_cookie              = $rabbitmq::params::erlang_cookie,
   $erlang_manage              = $rabbitmq::params::erlang_manage,
+  $ip                         = $rabbitmq::params::ip,
   $manage_service             = $rabbitmq::params::manage_service,
+  $management_ip              = $rabbitmq::params::management_ip,
   $management_port            = $rabbitmq::params::management_port,
-  $node_ip_address            = $rabbitmq::params::node_ip_address,
   $package_apt_pin            = $rabbitmq::params::package_apt_pin,
   $package_ensure             = $rabbitmq::params::package_ensure,
   $package_gpg_key            = $rabbitmq::params::package_gpg_key,
@@ -34,9 +35,11 @@ class rabbitmq(
   $ssl                        = $rabbitmq::params::ssl,
   $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
   $ssl_cert                   = $rabbitmq::params::ssl_cert,
+  $ssl_ip                     = $rabbitmq::params::ssl_ip,
   $ssl_key                    = $rabbitmq::params::ssl_key,
   $ssl_management             = $rabbitmq::params::ssl_management,
   $ssl_port                   = $rabbitmq::params::ssl_port,
+  $ssl_stomp_ip               = $rabbitmq::params::ssl_stomp_ip,
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
@@ -46,6 +49,7 @@ class rabbitmq(
   $ldap_use_ssl               = $rabbitmq::params::ldap_use_ssl,
   $ldap_port                  = $rabbitmq::params::ldap_port,
   $ldap_log                   = $rabbitmq::params::ldap_log,
+  $stomp_ip                   = $rabbitmq::params::stomp_ip,
   $stomp_port                 = $rabbitmq::params::stomp_port,
   $version                    = $rabbitmq::params::version,
   $wipe_db_on_cookie_change   = $rabbitmq::params::wipe_db_on_cookie_change,
@@ -79,15 +83,17 @@ class rabbitmq(
   validate_string($env_config)
   validate_absolute_path($env_config_path)
   validate_string($erlang_cookie)
+  validate_array($ip)
+  validate_string($management_ip)
   validate_string($management_port)
   validate_re($management_port, '\d+')
-  validate_string($node_ip_address)
   validate_absolute_path($plugin_dir)
   validate_array($plugin_list)
   validate_string($port, '\d+')
   validate_re($port, '\d+')
   validate_string($stomp_port)
   validate_re($stomp_port, '\d+')
+  validate_array($stomp_ip)
   validate_bool($wipe_db_on_cookie_change)
   # Validate service parameters.
   validate_bool($manage_service)
@@ -97,10 +103,12 @@ class rabbitmq(
   validate_bool($ssl)
   validate_string($ssl_cacert)
   validate_string($ssl_cert)
+  validate_array($ssl_ip)
   validate_string($ssl_key)
   validate_bool($ssl_management)
   validate_string($ssl_port)
   validate_re($ssl_port, '\d+')
+  validate_array($ssl_stomp_ip)
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
   validate_bool($ldap_auth)

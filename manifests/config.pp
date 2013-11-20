@@ -13,7 +13,6 @@ class rabbitmq::config {
   $env_config                 = $rabbitmq::env_config
   $env_config_path            = $rabbitmq::env_config_path
   $erlang_cookie              = $rabbitmq::erlang_cookie
-  $node_ip_address            = $rabbitmq::node_ip_address
   $plugin_dir                 = $rabbitmq::plugin_dir
   $port                       = $rabbitmq::port
   $service_name               = $rabbitmq::service_name
@@ -27,10 +26,7 @@ class rabbitmq::config {
   $wipe_db_on_cookie_change   = $rabbitmq::wipe_db_on_cookie_change
   $config_variables           = $rabbitmq::config_variables
   $cluster_partition_handling = $rabbitmq::cluster_partition_handling
-  $default_env_variables      =  {
-    'RABBITMQ_NODE_PORT'        => $port,
-    'RABBITMQ_NODE_IP_ADDRESS'  => $node_ip_address
-  }
+  $default_env_variables      = {}
 
   # Handle env variables.
   $environment_variables = merge($default_env_variables, $rabbitmq::environment_variables)

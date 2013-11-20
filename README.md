@@ -185,10 +185,6 @@ If true then we include an erlang module.
 
 To set config variables in rabbitmq.config
 
-####`node_ip_address`
-
-The value of RABBITMQ_NODE_IP_ADDRESS in rabbitmq_env.config
-
 ####`environment_variables`
 
 RabbitMQ Environment Variables in rabbitmq_env.config
@@ -218,6 +214,10 @@ Location of RabbitMQ plugins.
 
 List of RabbitMQ plugins to install/enable.
 
+####`ip`
+
+List of IP addresses for RabbitMQ to listen on.
+
 ####`port`
 
 The RabbitMQ port.
@@ -238,6 +238,10 @@ The public certificate to use for RabbitMQ SSL.
 
 The private key to use for RabbitMQ SSL.
 
+####`ssl_ip`
+
+List of IP addresses the RabbitMQ SSL listener should listen on.
+
 ####`ssl_port`
 
 The port the RabbitMQ SSL listener should use.
@@ -247,6 +251,18 @@ The port the RabbitMQ SSL listener should use.
 If enabled, should the management interface listen on HTTPS instead of HTTP.
 
 Note: You must configure ssl_cacert, ssl_cert and ssl_key first.
+
+####`ssl_stomp_ip`
+
+List of IP addresses to use for Stomp SSL listener.
+
+####`ssl_stomp_port`
+
+The port to use for Stomp SSL listener.
+
+####`management_ip`
+
+The IP to listen on for the RabbitMQ management interface.
 
 ####`management_port`
 
@@ -263,6 +279,10 @@ Determines if the service is managed.
 ####`service_name`
 
 The name of the service to manage.
+
+####`stomp_ip`
+
+List of IP addresses to use for Stomp.
 
 ####`stomp_port`
 

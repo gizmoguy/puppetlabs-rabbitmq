@@ -196,14 +196,6 @@ describe 'rabbitmq' do
       end
 
       context 'configuration setting' do
-        describe 'node_ip_address when set' do
-          let(:params) {{ :node_ip_address => '172.0.0.1' }}
-          it 'should set RABBITMQ_NODE_IP_ADDRESS to specified value' do
-            should contain_file('rabbitmq-env.config') \
-              .with_content(/RABBITMQ_NODE_IP_ADDRESS=172\.0\.0\.1/)
-          end
-        end
-
         describe 'stomp by default' do
           it 'should not specify stomp parameters in rabbitmq.config' do
             should_not contain_file('rabbitmq.config') \
@@ -214,7 +206,7 @@ describe 'rabbitmq' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679 }}
           it 'should specify stomp port in rabbitmq.config' do
             should contain_file('rabbitmq.config') \
-              .with_content(/rabbitmq_stomp/)
+              .with_content(/rabbitmq_stomp/) \
               .with_content(/tcp_listeners, \[5679\]/)
           end
           it 'should install rabbitmq_stomp plugin' do
@@ -225,8 +217,8 @@ describe 'rabbitmq' do
           let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
           it 'should specify stomp port and ssl stomp port in rabbitmq.config' do
             should contain_file('rabbitmq.config') \
-              .with_content(/rabbitmq_stomp/)
-              .with_content(/tcp_listeners, \[5679\]/)
+              .with_content(/rabbitmq_stomp/) \
+              .with_content(/tcp_listeners, \[5679\]/) \
               .with_content(/ssl_listeners, \[5680\]/)
           end
         end
@@ -274,7 +266,7 @@ describe 'rabbitmq' do
         let(:params) {{ :default_user => 'foo', :default_pass => 'bar' }}
         it 'should set default_user and default_pass to specified values' do
           should contain_file('rabbitmq.config') \
-            .with_content(/default_user, <<"foo">>/)
+            .with_content(/default_user, <<"foo">>/) \
             .with_content(/default_pass, <<"bar">>/)
         end
       end
@@ -290,9 +282,9 @@ describe 'rabbitmq' do
 
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config') \
-            .with_content(/ssl_listeners, \[3141\]/)
-            .with_content(/ssl_options, \[{cacertfile,"\/path\/to\/cacert"/)
-            .with_content(/certfile,"\/path\/to\/cert"/)
+            .with_content(/ssl_listeners, \[3141\]/) \
+            .with_content(/ssl_options, \[{cacertfile,"\/path\/to\/cacert"/) \
+            .with_content(/certfile,"\/path\/to\/cert"/) \
             .with_content(/keyfile,"\/path\/to\/key"/)
         end
       end
@@ -305,9 +297,63 @@ describe 'rabbitmq' do
 
         it 'should set ssl options to specified values' do
           should contain_file('rabbitmq.config') \
-            .with_content(/listener, \[/)
-            .with_content(/{port, 1337},/)
+            .with_content(/listener, \[/) \
+            .with_content(/{port, 1337}/) \
             .with_content(/{ssl, true}/)
+        end
+      end
+
+      describe 'listen options' do
+        let(:params) {
+          { :ip => ["1.2.3.4", "2001::beef"],
+            :port => 9999,
+            :ssl => true,
+            :ssl_ip => ["5.6.7.8", "2002::beef"],
+            :ssl_port => 8888
+        } }
+
+        it 'should set listen options to specified values' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/{rabbit, \[/) \
+            .with_content(/tcp_listeners, \[/) \
+            .with_content(/{"1.2.3.4", 9999}/) \
+            .with_content(/{"2001::beef", 9999}/) \
+            .with_content(/ssl_listeners, \[/) \
+            .with_content(/{"5.6.7.8", 8888}/) \
+            .with_content(/{"2002::beef", 8888}/)
+        end
+      end
+
+      describe 'management listen options' do
+        let(:params) {
+          { :management_ip => "9.10.11.12",
+        } }
+
+        it 'should set management listen options to specified values' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/{rabbitmq_management, \[/) \
+            .with_content(/{ip, "9.10.11.12"}/)
+        end
+      end
+
+      describe 'stomp listen options' do
+        let(:params) {
+          { :config_stomp => true,
+            :stomp_ip => ["13.14.15.16", "2003::beef"],
+            :stomp_port => 7777,
+            :ssl_stomp_ip => ["17.18.19.20", "2004::beef"],
+            :ssl_stomp_port => 6666
+        } }
+
+        it 'should set stomp listen options to specified values' do
+          should contain_file('rabbitmq.config') \
+            .with_content(/{rabbitmq_stomp, \[/) \
+            .with_content(/tcp_listeners, \[/) \
+            .with_content(/{"13.14.15.16", 7777}/) \
+            .with_content(/{"2003::beef", 7777}/) \
+            .with_content(/ssl_listeners, \[/) \
+            .with_content(/{"17.18.19.20", 6666}/) \
+            .with_content(/{"2004::beef", 6666}/)
         end
       end
 
