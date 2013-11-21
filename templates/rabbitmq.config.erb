@@ -81,6 +81,7 @@
     <%- end -%>
   <%- end -%>
   ]}
+<% end -%>
 <%- if @ldap_auth -%>,
 % Configure the LDAP authentication plugin
   {rabbitmq_auth_backend_ldap, [
@@ -91,7 +92,6 @@
     {port, <%= @ldap_port %>},
     {log, <%= @ldap_log %>}
   ]}
-<% end -%>
 <%- end -%>
 ].
 % EOF
