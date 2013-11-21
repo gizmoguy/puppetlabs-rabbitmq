@@ -1,5 +1,5 @@
-% This file managed by Puppet
-% Template Path: <%= @module_name %>/templates/rabbitmq.config
+<%= ERB.new(File.read(File.expand_path("_header.erb",File.dirname(file)))).result(binding) -%>
+
 [
   {rabbit, [
 <% if @ldap_auth -%>
