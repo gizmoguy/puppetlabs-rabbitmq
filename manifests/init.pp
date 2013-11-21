@@ -9,6 +9,7 @@ class rabbitmq(
   $config_mirrored_queues     = $rabbitmq::params::config_mirrored_queues,
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
+  $config_shovel              = $rabbitmq::params::config_shovel,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
@@ -32,6 +33,13 @@ class rabbitmq(
   $service_ensure             = $rabbitmq::params::service_ensure,
   $service_manage             = $rabbitmq::params::service_manage,
   $service_name               = $rabbitmq::params::service_name,
+  $shovel_name                = $rabbitmq::params::shovel_name,
+  $shovel_exchange            = $rabbitmq::params::shovel_exchange,
+  $shovel_routing_key         = $rabbitmq::params::shovel_routing_key,
+  $shovel_src_broker          = $rabbitmq::params::shovel_src_broker,
+  $shovel_src_queue           = $rabbitmq::params::shovel_src_queue,
+  $shovel_dst_broker          = $rabbitmq::params::shovel_dst_broker,
+  $shovel_dst_queue           = $rabbitmq::params::shovel_dst_queue,
   $ssl                        = $rabbitmq::params::ssl,
   $ssl_cacert                 = $rabbitmq::params::ssl_cacert,
   $ssl_cert                   = $rabbitmq::params::ssl_cert,
@@ -77,6 +85,7 @@ class rabbitmq(
   validate_bool($config_cluster)
   validate_bool($config_mirrored_queues)
   validate_bool($config_stomp)
+  validate_bool($config_shovel)
   validate_string($default_user)
   validate_string($default_pass)
   validate_bool($delete_guest_user)
@@ -100,6 +109,13 @@ class rabbitmq(
   validate_re($service_ensure, '^(running|stopped)$')
   validate_bool($service_manage)
   validate_string($service_name)
+  validate_string($shovel_name)
+  validate_string($shovel_exchange)
+  validate_string($shovel_routing_key)
+  validate_string($shovel_src_broker)
+  validate_string($shovel_src_queue)
+  validate_string($shovel_dst_broker)
+  validate_string($shovel_dst_queue)
   validate_bool($ssl)
   validate_string($ssl_cacert)
   validate_string($ssl_cert)
@@ -164,6 +180,15 @@ class rabbitmq(
 
   if ($ldap_auth) {
     rabbitmq_plugin { 'rabbitmq_auth_backend_ldap':
+      ensure   => present,
+      require  => Class['rabbitmq::install'],
+      notify   => Class['rabbitmq::service'],
+      provider => 'rabbitmqplugins',
+    }
+  }
+
+  if ($config_shovel) {
+    rabbitmq_plugin { 'rabbitmq_shovel':
       ensure   => present,
       require  => Class['rabbitmq::install'],
       notify   => Class['rabbitmq::service'],

@@ -93,5 +93,64 @@
     {log, <%= @ldap_log %>}
   ]}
 <%- end -%>
+<%- if @config_shovel -%>,
+% Configure the shovel plugin
+  {rabbitmq_shovel, [
+    {shovels, [
+      {<%= @shovel_name %>, [
+        {sources, [
+          {broker, "<%= @shovel_src_broker %>"},
+          {declarations, [
+            {'exchange.declare', [
+              {exchange, <<"<%= @shovel_exchange %>">>},
+              {type, <<"direct">>},
+              durable
+            ]},
+            {'queue.declare', [
+              {queue, <<"<%= @shovel_src_queue %>">>},
+              durable
+            ]},
+            {'queue.bind', [
+              {exchange, <<"<%= @shovel_exchange %>">>},
+              {queue, <<"<%= @shovel_src_queue %>">>},
+              {routing_key, <<"<%= @shovel_routing_key %>">>}
+            ]}
+          ]}
+        ]},
+
+        {destinations, [
+          {broker, "<%= @shovel_dst_broker %>"},
+          {declarations, [
+            {'exchange.declare', [
+              {exchange, <<"<%= @shovel_exchange %>">>},
+              {type, <<"direct">>},
+              durable
+            ]},
+            {'queue.declare', [
+              {queue, <<"<%= @shovel_dst_queue %>">>},
+              durable
+            ]},
+            {'queue.bind', [
+              {exchange, <<"<%= @shovel_exchange %>">>},
+              {queue, <<"<%= @shovel_dst_queue %>">>},
+              {routing_key, <<"<%= @shovel_routing_key %>">>}
+            ]}
+          ]}
+        ]},
+
+        {queue, <<"<%= @shovel_src_queue %>">>},
+        {ack_mode, on_confirm},
+        {publish_properties, [
+          {delivery_mode, 2}
+        ]},
+        {publish_fields, [
+          {exchange, <<"<%= @shovel_exchange %>">>},
+          {routing_key, <<"<%= @shovel_routing_key %>">>}
+        ]},
+        {reconnect_delay, 6}
+      ]}
+    ]}
+  ]}
+<%- end -%>
 ].
 % EOF

@@ -54,6 +54,7 @@ class rabbitmq::params {
   $config_mirrored_queues     = false
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp               = false
+  $config_shovel              = false
   $default_user               = 'guest'
   $default_pass               = 'guest'
   $delete_guest_user          = false
@@ -66,6 +67,13 @@ class rabbitmq::params {
   $plugin_dir                 = "/usr/lib/rabbitmq/lib/rabbitmq_server-${version}/plugins"
   $plugin_list                = []
   $port                       = '5672'
+  $shovel_name                = ''
+  $shovel_exchange            = ''
+  $shovel_routing_key         = ''
+  $shovel_src_broker          = ''
+  $shovel_src_queue           = ''
+  $shovel_dst_broker          = ''
+  $shovel_dst_queue           = ''
   $ssl                        = false
   $ssl_cacert                 = 'UNSET'
   $ssl_cert                   = 'UNSET'

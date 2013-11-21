@@ -224,6 +224,51 @@ describe 'rabbitmq' do
         end
       end
 
+      context 'configuration setting' do
+        describe 'shovel by default' do
+          it 'should not specify shovel parameters in rabbitmq.config' do
+            should_not contain_file('rabbitmq.config') \
+              .with_content(/rabbitmq_shovel/)
+          end
+        end
+        describe 'shovel when set' do
+          let(:params) do
+            { :config_shovel => true,
+              :shovel_name => 'test_shovel',
+              :shovel_exchange => 'test_exchange',
+              :shovel_routing_key => 'test_key',
+              :shovel_src_broker => 'testsource',
+              :shovel_src_queue => 'test_src_queue',
+              :shovel_dst_broker => 'testdest',
+              :shovel_dst_queue => 'test_dst_queue'
+            }
+          end
+          it 'should specify stomp port in rabbitmq.config' do
+            should contain_file('rabbitmq.config') \
+              .with_content(/rabbitmq_shovel/) \
+              .with_content(/{test_shovel/) \
+              .with_content(/{broker, "testsource"}/) \
+              .with_content(/{exchange, <<"test_exchange">>}/) \
+              .with_content(/{queue, <<"test_src_queue">>}/) \
+              .with_content(/{routing_key, <<"test_key">>}/) \
+              .with_content(/{broker, "testdest"}/) \
+              .with_content(/{queue, <<"test_dst_queue">>}/)
+          end
+          it 'should install rabbitmq_shovel plugin' do
+            should contain_rabbitmq_plugin('rabbitmq_shovel')
+          end
+        end
+        describe 'stomp when set with ssl' do
+          let(:params) {{ :config_stomp => true, :stomp_port => 5679, :ssl_stomp_port => 5680 }}
+          it 'should specify stomp port and ssl stomp port in rabbitmq.config' do
+            should contain_file('rabbitmq.config') \
+              .with_content(/rabbitmq_stomp/) \
+              .with_content(/tcp_listeners, \[5679\]/) \
+              .with_content(/ssl_listeners, \[5680\]/)
+          end
+        end
+      end
+
      describe 'install additional plugins' do
         let(:params) {{ :plugin_list => ['rabbitmq_shovel', 'rabbitmq_mqtt'] }}
         it 'should install rabbitmq_shovel plugin' do
