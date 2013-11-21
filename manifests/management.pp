@@ -17,6 +17,11 @@ class rabbitmq::management {
       password => $::clientcert,
       provider => 'rabbitmqctl',
     }
+    rabbitmq_user_permissions { "${::clientcert}@/":
+      configure_permission => '.*',
+      read_permission      => '.*',
+      write_permission     => '.*',
+    }
   } else {
     rabbitmq_user { $::clientcert:
       ensure   => absent,

@@ -449,6 +449,11 @@ describe 'rabbitmq' do
               'password' => 'foo.bar',
               'ensure'   => 'present',
             )
+            should contain_rabbitmq_user_permissions('foo.bar@/').with(
+              'configure_permission' => '.*',
+              'read_permission'   => '.*',
+              'write_permission'   => '.*',
+            )
           end
         end
       end
