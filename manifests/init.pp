@@ -10,6 +10,7 @@ class rabbitmq(
   $config_path                = $rabbitmq::params::config_path,
   $config_stomp               = $rabbitmq::params::config_stomp,
   $config_shovel              = $rabbitmq::params::config_shovel,
+  $create_cert_user           = $rabbitmq::params::create_cert_user,
   $default_user               = $rabbitmq::params::default_user,
   $default_pass               = $rabbitmq::params::default_pass,
   $delete_guest_user          = $rabbitmq::params::delete_guest_user,
@@ -86,6 +87,7 @@ class rabbitmq(
   validate_bool($config_mirrored_queues)
   validate_bool($config_stomp)
   validate_bool($config_shovel)
+  validate_bool($create_cert_user)
   validate_string($default_user)
   validate_string($default_pass)
   validate_bool($delete_guest_user)

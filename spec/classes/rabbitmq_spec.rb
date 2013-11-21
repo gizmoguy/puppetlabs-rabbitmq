@@ -29,7 +29,8 @@ describe 'rabbitmq' do
       let(:facts) {{
         :osfamily => distro,
         :rabbitmq_erlang_cookie => 'EOKOWXQREETZSHFNTPEY',
-        :lsbdistcodename => 'squeeze'
+        :lsbdistcodename => 'squeeze',
+        :clientcert => 'foo.bar'
       }}
 
       it { should contain_class('rabbitmq::install') }
@@ -431,6 +432,22 @@ describe 'rabbitmq' do
             should contain_rabbitmq_user('guest').with(
               'ensure'   => 'absent',
               'provider' => 'rabbitmqctl'
+            )
+          end
+        end
+      end
+
+      context 'create_cert_user' do
+        describe 'should do nothing by default' do
+          it { should contain_rabbitmq_user('foo.bar').with_ensure('absent') }
+        end
+
+        describe 'create user when create_cert_user set' do
+          let(:params) {{ :create_cert_user => true }}
+          it 'creates the user' do
+            should contain_rabbitmq_user('foo.bar').with(
+              'password' => 'foo.bar',
+              'ensure'   => 'present',
             )
           end
         end

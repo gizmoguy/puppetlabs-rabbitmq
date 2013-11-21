@@ -165,6 +165,10 @@ Boolean to enable or disable stomp.
 
 Boolean to decide if we should delete the default guest user.
 
+####`create_cert_user`
+
+Boolean to decide if we should create a user based on the clientcert fact.
+
 ####`env_config`
 
 The template file to use for rabbitmq_env.config.

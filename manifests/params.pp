@@ -55,6 +55,7 @@ class rabbitmq::params {
   $config_path                = '/etc/rabbitmq/rabbitmq.config'
   $config_stomp               = false
   $config_shovel              = false
+  $create_cert_user           = false
   $default_user               = 'guest'
   $default_pass               = 'guest'
   $delete_guest_user          = false
