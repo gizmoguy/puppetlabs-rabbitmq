@@ -71,7 +71,7 @@ class rabbitmq::params {
   $shovel_name                = ''
   $shovel_exchange            = ''
   $shovel_routing_key         = ''
-  $shovel_src_broker          = ''
+  $shovel_src_broker          = "amqp://${::clientcert}:${::clientcert}@"
   $shovel_src_queue           = ''
   $shovel_dst_broker          = ''
   $shovel_dst_queue           = ''
