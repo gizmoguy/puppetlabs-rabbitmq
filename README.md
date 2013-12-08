@@ -292,6 +292,10 @@ List of IP addresses to use for Stomp.
 
 The port to use for Stomp.
 
+####`user_list`
+
+List of users to create on system with full permissions.
+
 ####`wipe_db_on_cookie_change`
 
 Boolean to determine if we should DESTROY AND DELETE the RabbitMQ database.

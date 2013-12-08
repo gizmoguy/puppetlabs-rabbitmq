@@ -52,6 +52,7 @@ class rabbitmq(
   $ssl_stomp_port             = $rabbitmq::params::ssl_stomp_port,
   $ssl_verify                 = $rabbitmq::params::ssl_verify,
   $ssl_fail_if_no_peer_cert   = $rabbitmq::params::ssl_fail_if_no_peer_cert,
+  $user_list                  = $rabbitmq::params::user_list,
   $ldap_auth                  = $rabbitmq::params::ldap_auth,
   $ldap_server                = $rabbitmq::params::ldap_server,
   $ldap_user_dn_pattern       = $rabbitmq::params::ldap_user_dn_pattern,
@@ -129,6 +130,7 @@ class rabbitmq(
   validate_array($ssl_stomp_ip)
   validate_string($ssl_stomp_port)
   validate_re($ssl_stomp_port, '\d+')
+  validate_array($user_list)
   validate_bool($ldap_auth)
   validate_string($ldap_server)
   validate_string($ldap_user_dn_pattern)
